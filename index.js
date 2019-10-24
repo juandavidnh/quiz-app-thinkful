@@ -1,10 +1,8 @@
 'user strict';
 
 const STORE = [
-    //1
-    {questionnaire:[
     {
-    id: cuid(), 
+    //1
     question: "What is the scientific name of the domestic cat?", 
     choices: ["Felis Catus", 
         "Felis Familiaris", 
@@ -21,7 +19,6 @@ const STORE = [
 
     //2
     {
-    id: cuid(), 
     question: "What’s the average lifespan of a cat?", 
     choices: ["5 years", 
             "8 years", 
@@ -40,7 +37,6 @@ const STORE = [
 
     //3
     {
-    id: cuid(), 
     question: "Where’s the earliest evidence of cat domestication?", 
     choices: ["Poland", 
         "Argentina", 
@@ -59,7 +55,6 @@ const STORE = [
 
     //4
     {
-    id: cuid(), 
     question: "On average, how many hours per day do cats sleep?", 
     choices: ["3-4 hours", 
             "13-14 hours", 
@@ -75,7 +70,6 @@ const STORE = [
 
     //5
     {
-    id: cuid(), 
     question: "In Marvel Comics, what is the name of the alien species that resembles cats?", 
     choices: ["Lioncow", 
             "Makis", 
@@ -93,35 +87,72 @@ const STORE = [
     dimensions.`,
     
     },
-    ]},
-    {correct: 0},
-    {questionNumber: 1}
 ]
 
-
-function renderInitialQuestion(){
-    $(main).on('click', '.welcome-button', (function() {
-        this.html(`
-<form action="/question2.html" >
-    <legend class = "question">What is the scientific name of the domestic cat?</legend>
-    <input type="radio" name="question-1" id="ans-q1-1" value="0" checked>
-    <label for = "ans-q1-1">Felis Catus</label>
-    <br>
-    <input type="radio" name="question-1" id="ans-q1-2" value="0">
-    <label for = "ans-q1-2">Felis Familiaris</label>
-    <br>
-    <input type="radio" name="question-1" id="ans-q1-3" value="0">
-    <label for = "ans-q1-3">Felinus Alegris</label>
-    <br>
-    <input type="radio" name="question-1" id="ans-q1-3" value="0">
-    <label for = "ans-q1-4">Felis Silvestris</label>
-    <br>
-</form>
-<section class="button">
-    <a  href="question2.html">Submit</a>
-</section>`)
-    }),)}
+const counter = {
+    correct: 0,
+    questionNumber: 1,
+}
 
 
-renderInitialQuestion();
 
+function generateQuestion(item){
+    return `
+    <form action="/question2.html" method="POST">
+        <legend class = "question">${item.question}</legend>
+        <input type="radio" name="question-${counter.questionNumber}" id="ans-q${counter.questionNumber}-1" value="0" checked required>
+        <label for = "ans-q${counter.questionNumber}-1">${item.choices[0]}</label>
+        <br>
+        <input type="radio" name="question-${counter.questionNumber}" id="ans-q${counter.questionNumber}-2" value="0">
+        <label for = "ans-q${counter.questionNumber}-2">${item.choices[1]}</label>
+        <br>
+        <input type="radio" name="question-${counter.questionNumber}" id="ans-q${counter.questionNumber}-3" value="0">
+        <label for = "ans-q${counter.questionNumber}-3">${item.choices[2]}</label>
+        <br>
+        <input type="radio" name="question-${counter.questionNumber}" id="ans-q${counter.questionNumber}-4" value="0">
+        <label for = "ans-q${counter.questionNumber}-4">${item.choices[3]}</label>
+        <br>
+        <button class="submit-button" type="submit">Submit</button>
+    </form>`
+}
+
+
+
+
+function renderQuestion(){
+    $('main').on('click', '.submit-button', function(event) {
+        event.preventDefault();
+        console.log("click welcome working");
+        $(this).closest('main').html(generateQuestion(STORE[counter.questionNumber - 1]));
+        counter.questionNumber++;
+    });
+    }
+
+function renderQuestionNumber(){}
+
+function evalCorrect(selectAnswer){
+    if(selectAnswer === STORE[counter.questionNumber-1].answer){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+function scoreCount(answerBool){
+    if(answerBool === true){
+        counter.correct++;
+    }
+}
+
+function renderScore(){}
+
+function renderPopUp(){}
+
+function handleQuestionnaire(){
+    renderQuestion();
+    renderQuestionNumber();
+    renderScore();
+    renderPopUp();
+}
+
+$(handleQuestionnaire);
