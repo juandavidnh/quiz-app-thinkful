@@ -94,6 +94,10 @@ const counter = {
     questionNumber: 1,
 }
 
+const finalMessage = {
+    goodScore: `Congratulations! You're a cat expert.`,
+    badScore: `You need to improve your cat game.`
+}
 
 
 function generateQuestion(item){
@@ -112,47 +116,84 @@ function generateQuestion(item){
         <input type="radio" name="question-${counter.questionNumber}" id="ans-q${counter.questionNumber}-4" value="0">
         <label for = "ans-q${counter.questionNumber}-4">${item.choices[3]}</label>
         <br>
-        <button class="submit-button" type="submit">Submit</button>
+        <button class="submit-button next-button" type="submit">Submit</button>
     </form>`
 }
 
-
+function generateQuestionCount(countQ){
+    return `Question: ${countQ.questionNumber}/5`;
+}
 
 
 function renderQuestion(){
-    $('main').on('click', '.submit-button', function(event) {
+    
+    $('main').on('click', '.next-button', function(event) {
+        
         event.preventDefault();
-        console.log("click welcome working");
-        $(this).closest('main').html(generateQuestion(STORE[counter.questionNumber - 1]));
+        if(counter.questionNumber <= 5){
+        $(this).closest('main').html(generateQuestion(STORE[counter.questionNumber - 1])).prev('.counter').find('.question-count').text(generateQuestionCount(counter));
         counter.questionNumber++;
-    });
+    }else{
+        renderFinalScreen();
     }
+    }
+       
+    )
+}
 
-function renderQuestionNumber(){}
 
 function evalCorrect(selectAnswer){
-    if(selectAnswer === STORE[counter.questionNumber-1].answer){
-        return true;
-    }else{
-        return false;
-    }
-}
-
-function scoreCount(answerBool){
-    if(answerBool === true){
+    if(selectAnswer === STORE[counter.questionNumber-2].answer){
         counter.correct++;
+        return true;
     }
 }
 
-function renderScore(){}
 
-function renderPopUp(){}
+
+
+function generateScoreBoard(counterInf){
+    return `Score: ${counterInf.correct}`;
+}
+
+function renderPopUp(val){
+    if(val===true){
+        alert(STORE[counter.questionNumber-2].correctMes)
+    }else{
+        alert(STORE[counter.questionNumber-2].inCorrMes)
+    }
+}
+
+function renderScore(){
+    $('main').on('click','.submit-button', function(event){
+        event.preventDefault();
+        let userAnswer = $('input[type=radio]:checked').next('label').text();
+        renderPopUp(evalCorrect(userAnswer));
+        $(this).closest('main').prev('.counter').find('.score-count').text(generateScoreBoard(counter));
+        
+    })
+}
+
+function generateFinalScreen(){
+    return `
+        <h1>Cat Knowledge Quiz</h1>
+        <h3>You got</h3> 
+        <h2>${counter.correct}/5</h2>
+        <p>${(counter.correct > 3) ? finalMessage.goodScore : finalMessage.badScore}</p>
+        <section class="button">
+            <a  href="cat-quiz-app.html">Start Over</a>
+        </section>
+    `
+}
+
+function renderFinalScreen(){
+        $("body").html(generateFinalScreen());   
+}   
+
 
 function handleQuestionnaire(){
-    renderQuestion();
-    renderQuestionNumber();
-    renderScore();
-    renderPopUp();
+        renderScore();
+        renderQuestion();
 }
 
 $(handleQuestionnaire);
