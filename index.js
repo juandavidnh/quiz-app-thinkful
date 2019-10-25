@@ -9,11 +9,10 @@ const STORE = [
         "Felinus Alegris", 
         "Felis Silvestris"],
     answer: "Felis Catus",
-    correctMes: `Correct! Felis Catus is the scientific name of 
-    the domestic cat. Felis means “cat” in latin, whereas catus 
-    means “cunning, sly, crafty."`,
-    inCorrMes:`Incorrect! The right answer is Felis Catus 
-    which means cunning cat in latin.`,
+    correctMes: `Correct! Felis Catus is the scientific name of the domestic cat. Felis means “cat” in latin, whereas catus means “cunning, sly, crafty."`,
+    inCorrMes:`Incorrect! The right answer is Felis Catus which means cunning cat in latin.`,
+    image: 'media/adorable-animal-animal-photography.jpg',
+    alt: 'adorable-animal-animal-photography.jpg',
 
     },
 
@@ -25,14 +24,10 @@ const STORE = [
             "15 years", 
             "20 years"],
     answer: "15 years",
-    correctMes: `Correct! In 2018, the average lifespan of a pet cat 
-    was 15 years old. Just 23 years ago the average lifespan was 
-    below 10. Widespread sterilization, has improved cats’ health and 
-    overall quality of life.`,
-    inCorrMes: `Incorrect! In 2018, the average lifespan of a pet cat 
-    was 15 years old. Just 23 years ago the average lifespan was 
-    below 10. Widespread sterilization, has improved cats’ health and 
-    overall quality of life.`,
+    correctMes: `Correct! In 2018, the average lifespan of a pet cat was 15 years old. Just 23 years ago the average lifespan was below 10. Widespread sterilization, has improved cats’ health and overall quality of life.`,
+    inCorrMes: `Incorrect! In 2018, the average lifespan of a pet cat was 15 years old. Just 23 years ago the average lifespan was below 10. Widespread sterilization, has improved cats’ health and overall quality of life.`,
+    image: 'media/animals-cats-cute.jpg',
+    alt: 'animals-cats-cute',
     },
 
     //3
@@ -43,13 +38,10 @@ const STORE = [
         "Egypt", 
         "Cyprus"],
     answer: "Cyprus",
-    correctMes: `Correct! The earliest indication of cat taming was
-    found in Cyprus, where a cat skeleton from 7,500 BC was excavated 
-    next to a human.`,
-    inCorrMes:`Incorrect! Contrary to popular belief, Egyptians were 
-    not the first ones to domesticate cats. The earliest indication 
-    of cat taming was found in Cyprus, where a cat skeleton from 
-    7,500 BC was excavated next to a human.`,
+    correctMes: `Correct! The earliest indication of cat taming was found in Cyprus, where a cat skeleton from 7,500 BC was excavated next to a human.`,
+    inCorrMes:`Incorrect! Contrary to popular belief, Egyptians were not the first ones to domesticate cats. The earliest indication of cat taming was found in Cyprus, where a cat skeleton from 7,500 BC was excavated next to a human.`,
+    image: 'media/adorable-animal-british.jpg',
+    alt: 'adorable-animal-british',
     
     },
 
@@ -61,10 +53,10 @@ const STORE = [
             "8 hours", 
             "18-20 hours"],
     answer: "13-14 hours",
-    correctMes: `Correct! Cats love to sleep! The average cat sleeps 
-    13-14 hours but there are some that sleep up to 20 hours per day.`,
-    inCorrMes:`Incorrect! The average cat sleeps 13-14 hours but 
-    there are some that sleep up to 20 hours per day.`,
+    correctMes: `Correct! Cats love to sleep! The average cat sleeps 13-14 hours but there are some that sleep up to 20 hours per day.`,
+    inCorrMes:`Incorrect! The average cat sleeps 13-14 hours but there are some that sleep up to 20 hours per day.`,
+    image: 'media/adorable-animals-cat-bed.jpg',
+    alt: 'adorable-animals-cat-bed',
     
     },
 
@@ -76,15 +68,10 @@ const STORE = [
             "Starlord", 
             "Flerken"],
     answer: "Flerken",
-    correctMes: `Correct! Flerkens are alien creatures that look 
-    like cats and behave like cats, but unlike cats, flerkens have a 
-    few special abilities such as ejecting giant tentacles from their 
-    mouths and traveling across dimensions.`,
-    inCorrMes: `Incorrect! Flerkens is the right answer. They are 
-    alien creatures that look like cats and behave like cats, but 
-    unlike cats, flerkens have a few special abilities such as 
-    ejecting giant tentacles from their mouths and traveling across 
-    dimensions.`,
+    correctMes: `Correct! Flerkens are alien creatures that look like cats and behave like cats, but unlike cats, flerkens have a few special abilities such as ejecting giant tentacles from their mouths and traveling across dimensions.`,
+    inCorrMes: `Incorrect! Flerkens is the right answer. They are alien creatures that look like cats and behave like cats, but unlike cats, flerkens have a few special abilities such as ejecting giant tentacles from their mouths and traveling across dimensions.`,
+    image: 'media/captain-marvel-cat-goose.jpg',
+    alt: 'captain-marvel-cat-goose',
     
     },
 ]
@@ -102,6 +89,9 @@ const finalMessage = {
 
 function generateQuestion(item){
     return `
+    <section class = "main-image">
+        <img class= 'main-image-el' src = '${item.image}' alt='${item.alt}' />
+    </section>
     <form action="/question2.html" method="POST">
         <legend class = "question">${item.question}</legend>
         <input type="radio" name="question-${counter.questionNumber}" id="ans-q${counter.questionNumber}-1" value="0" checked required>
@@ -131,7 +121,7 @@ function renderQuestion(){
         
         event.preventDefault();
         if(counter.questionNumber <= 5){
-        $(this).closest('main').html(generateQuestion(STORE[counter.questionNumber - 1])).prev('.counter').find('.question-count').text(generateQuestionCount(counter));
+        $(this).closest('main').html(generateQuestion(STORE[counter.questionNumber - 1])).prev('header').find('.question-count').text(generateQuestionCount(counter)).closest('header').find('.score-count').text(generateScoreBoard(counter));
         counter.questionNumber++;
     }else{
         renderFinalScreen();
@@ -158,9 +148,9 @@ function generateScoreBoard(counterInf){
 
 function renderPopUp(val){
     if(val===true){
-        alert(STORE[counter.questionNumber-2].correctMes)
+        swal("Good Job!", STORE[counter.questionNumber-2].correctMes, "success" )
     }else{
-        alert(STORE[counter.questionNumber-2].inCorrMes)
+        swal("You're wrong :(", STORE[counter.questionNumber-2].inCorrMes, "error")
     }
 }
 
@@ -169,7 +159,6 @@ function renderScore(){
         event.preventDefault();
         let userAnswer = $('input[type=radio]:checked').next('label').text();
         renderPopUp(evalCorrect(userAnswer));
-        $(this).closest('main').prev('.counter').find('.score-count').text(generateScoreBoard(counter));
         
     })
 }
