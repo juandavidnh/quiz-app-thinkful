@@ -8,12 +8,11 @@ const STORE = [
         "Felis Familiaris", 
         "Felinus Alegris", 
         "Felis Silvestris"],
-    answer: "Felis Catus",
+    answer: "Felis Catus", 
     correctMes: `Correct! Felis Catus is the scientific name of the domestic cat. Felis means “cat” in latin, whereas catus means “cunning, sly, crafty."`,
     inCorrMes:`Incorrect! The right answer is Felis Catus which means cunning cat in latin.`,
     image: 'media/adorable-animal-animal-photography.jpg',
-    alt: 'adorable-animal-animal-photography.jpg',
-
+    alt: 'adorable-animal-animal-photography',
     },
 
     //2
@@ -71,14 +70,14 @@ const STORE = [
     correctMes: `Correct! Flerkens are alien creatures that look like cats and behave like cats, but unlike cats, flerkens have a few special abilities such as ejecting giant tentacles from their mouths and traveling across dimensions.`,
     inCorrMes: `Incorrect! Flerkens is the right answer. They are alien creatures that look like cats and behave like cats, but unlike cats, flerkens have a few special abilities such as ejecting giant tentacles from their mouths and traveling across dimensions.`,
     image: 'media/captain-marvel-cat-goose.jpg',
-    alt: 'captain-marvel-cat-goose',
+    alt: 'captain-marvel-cat-goose', 
     
     },
 ]
 
 const counter = {
     correct: 0,
-    questionNumber: 1,
+    questionNumber: 1, 
 }
 
 const finalMessage = {
@@ -86,13 +85,13 @@ const finalMessage = {
     badScore: `You need to improve your cat game.`
 }
 
-
+//generate HTML for individual questions
 function generateQuestion(item){
     return `
     <section class = "main-image">
         <img class= 'main-image-el' src = '${item.image}' alt='${item.alt}' />
     </section>
-    <form action="/question2.html" method="POST">
+    <form action="/random-server-stuff" method="POST">
         <legend class = "question">${item.question}</legend>
         <input type="radio" name="question-${counter.questionNumber}" id="ans-q${counter.questionNumber}-1" value="0" checked required>
         <label for = "ans-q${counter.questionNumber}-1">${item.choices[0]}</label>
@@ -110,59 +109,7 @@ function generateQuestion(item){
     </form>`
 }
 
-function generateQuestionCount(countQ){
-    return `Question: ${countQ.questionNumber}/5`;
-}
-
-
-function renderQuestion(){
-    
-    $('main').on('click', '.next-button', function(event) {
-        
-        event.preventDefault();
-        if(counter.questionNumber <= 5){
-        $(this).closest('main').html(generateQuestion(STORE[counter.questionNumber - 1])).prev('header').find('.question-count').text(generateQuestionCount(counter)).closest('header').find('.score-count').text(generateScoreBoard(counter));
-        counter.questionNumber++;
-    }else{
-        renderFinalScreen();
-    }
-    }
-       
-    )
-}
-
-
-function evalCorrect(selectAnswer){
-    if(selectAnswer === STORE[counter.questionNumber-2].answer){
-        counter.correct++;
-        return true;
-    }
-}
-
-
-
-
-function generateScoreBoard(counterInf){
-    return `Score: ${counterInf.correct}`;
-}
-
-function renderPopUp(val){
-    if(val===true){
-        swal("Good Job!", STORE[counter.questionNumber-2].correctMes, "success" )
-    }else{
-        swal("You're wrong :(", STORE[counter.questionNumber-2].inCorrMes, "error")
-    }
-}
-
-function renderScore(){
-    $('main').on('click','.submit-button', function(event){
-        event.preventDefault();
-        let userAnswer = $('input[type=radio]:checked').next('label').text();
-        renderPopUp(evalCorrect(userAnswer));
-        
-    })
-}
-
+//generate HTML for final screen
 function generateFinalScreen(){
     return `
         <h1>Cat Knowledge Quiz</h1>
@@ -171,14 +118,54 @@ function generateFinalScreen(){
         <p>${(counter.correct > 3) ? finalMessage.goodScore : finalMessage.badScore}</p>
         <section class="button">
             <a  href="cat-quiz-app.html">Start Over</a>
-        </section>
-    `
+        </section>   
+        `
 }
 
-function renderFinalScreen(){
-        $("body").html(generateFinalScreen());   
-}   
+function evalCorrect(selectAnswer){
+    //compare selected answer with stored correct answer, if they're equal increase correct count and return true
+    if(selectAnswer === STORE[counter.questionNumber-2].answer){
+        counter.correct++;
+        return true;
+    }
+}
 
+//render feedback in regards to answer
+function renderPopUp(val){
+    if(val===true){
+        swal("Good Job!", STORE[counter.questionNumber-2].correctMes, "success" )
+    }else{
+        swal("You're wrong :(", STORE[counter.questionNumber-2].inCorrMes, "error")
+    }
+}
+
+ 
+function renderScore(){
+    $('main').on('click','.submit-button', function(event){
+        event.preventDefault();
+        let userAnswer = $('input[type=radio]:checked').next('label').text();
+        renderPopUp(evalCorrect(userAnswer));    
+    })
+}
+
+function renderQuestion(){
+    $('main').on('click', '.next-button', function(event) {   
+        event.preventDefault();
+        //questionCount and scoreBoard store HTML content
+        let questionCount = `Question: ${counter.questionNumber}/${STORE.length}`;  
+        let scoreBoard = `Score: ${counter.correct}`; 
+        let questionContent = STORE[counter.questionNumber - 1];
+        //iterate through each element within the array and place its contents across the DOM 
+        if(counter.questionNumber <= STORE.length){     
+            $(this).closest('main').html(generateQuestion(questionContent)).prev('header').find('.question-count').text(questionCount).closest('header').find('.score-count').text(scoreBoard);
+            counter.questionNumber++;
+        }
+        //when the user has finished all questions, render the final screen
+        else{
+            $("body").html(generateFinalScreen());   
+        }
+    })
+}
 
 function handleQuestionnaire(){
         renderScore();
